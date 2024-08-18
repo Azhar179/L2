@@ -1,0 +1,23 @@
+pipeline {
+  agent {
+    docker { image 'liquibase/liquibase:4.4.2' }
+  }
+  
+  stages {
+    stage('Status') {
+      steps {
+        sh 'liquibase status --url="jdbc:mysql://localhost:3306/liquibase15.8" --changeLogFile=changelog-master.xml --username=root --password=root'
+      }
+    }
+    stage('Update') {
+      steps {
+        sh 'liquibase update --url="jdbc:mysql://localhost:3306/liquibase15.8" --changeLogFile=changelog-master.xml --username=root --password=root'
+      }
+    }
+  }
+  post {
+    always {
+      cleanWs()
+    }
+  }
+}
