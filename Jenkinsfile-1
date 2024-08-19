@@ -6,12 +6,12 @@ pipeline {
   stages {
     stage('Status') {
       steps {
-        sh 'liquibase status --url="database-1.c56iagcoujps.us-east-1.rds.amazonaws.com" --changeLogFile=changelog-master.xml --username=postgres --password=$Tcs12310'
+        sh 'liquibase status --url="database-1.c56iagcoujps.us-east-1.rds.amazonaws.com" --changeLogFile=changelog-master.xml --username=admin --password=$Admin123'
       }
     }
     stage('Update') {
       steps {
-        sh 'liquibase update --url="database-1.c56iagcoujps.us-east-1.rds.amazonaws.com" --changeLogFile=changelog-master.xml --username=postgres --password=$Tcs12310'
+        sh 'liquibase update --url="database-1.c56iagcoujps.us-east-1.rds.amazonaws.com" --changeLogFile=changelog-master.xml --username=admin --password=$Admin123'
       }
     }
   }
