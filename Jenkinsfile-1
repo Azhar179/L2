@@ -3,29 +3,47 @@ pipeline {
 
     environment {
         LIQUIBASE_VERSION = '4.28.0'
-        LIQUIBASE_HOME = "/opt/liquibase"
+        LIQUIBASE_HOME = "C:\\liquibase"
         DB_URL = 'jdbc:mysql://localhost:3306/liquibase15.8'
         DB_USERNAME = 'root'
         DB_PASSWORD = 'root'
-        CHANGELOG_FILE = 'C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog/changelog-master.xml'
+        CHANGELOG_FILE = 'C:\\Users\\azbag\\Downloads\\liquibase15.8\\demo\\src\\main\\resources\\db\\changelog\\changelog-master.xml'
     }
+
     stages {
         stage('Install Liquibase') {
             steps {
-                bat 'docker pull liquibase/liquibase:4.28.0'
+                script {
+                    // Download and install Liquibase
+                    bat """
+                    powershell -Command "Invoke-WebRequest -Uri https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.zip -OutFile liquibase-${LIQUIBASE_VERSION}.zip"
+                    powershell -Command "Expand-Archive -Path liquibase-${LIQUIBASE_VERSION}.zip -DestinationPath ${LIQUIBASE_HOME}"
+                    powershell -Command "New-Item -ItemType SymbolicLink -Path 'C:\\Program Files\\Liquibase' -Target '${LIQUIBASE_HOME}\\liquibase'"
+                    """
+                }
             }
         }
+
         stage('Apply Database Changes') {
             steps {
-                bat 'docker run --rm --name liquibase -v C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog:/liquibase/changelog \
-    liquibase/liquibase:4.28.0 \
-    --changeLogFile=/liquibase/changelog/changelog-master.xml update'
+                script {
+                    // Run Liquibase update command
+                    bat """
+                    liquibase --changeLogFile=${CHANGELOG_FILE} ^
+                              --url=${DB_URL} ^
+                              --username=${DB_USERNAME} ^
+                              --password=${DB_PASSWORD} ^
+                              update
+                    """
+                }
             }
         }
     }
+
     post {
-        always {
-            bat 'docker container prune -f'
+        cleanup {
+            // Optionally clean up the Liquibase installation
+            bat 'rmdir /s /q ${LIQUIBASE_HOME}'
         }
     }
 }
