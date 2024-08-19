@@ -1,23 +1,49 @@
 pipeline {
-  agent {
-    docker { image 'liquibase/liquibase:4.28.0' }
-  }
-  
-  stages {
-    stage('Status') {
-      steps {
-        sh 'liquibase status --url="jdbc:mysql://localhost:3306/liquibase15.8" --changeLogFile=changelog-master.xml --username=root --password=$root'
-      }
+    agent any
+
+    environment {
+        LIQUIBASE_VERSION = '4.28.0'
+        LIQUIBASE_HOME = "/opt/liquibase"
+        DB_URL = 'jdbc:mysql://localhost:3306/liquibase15.8'
+        DB_USERNAME = 'root'
+        DB_PASSWORD = 'root'
+        CHANGELOG_FILE = 'C:\Users\azbag\Downloads\liquibase15.8\demo\src\main\resources\db\changelog\changelog-master.xml'
     }
-    stage('Update') {
-      steps {
-        sh 'liquibase update --url="jdbc:mysql://localhost:3306/liquibase15.8" --changeLogFile=changelog-master.xml --username=root --password=$root'
-      }
+
+    stages {
+        stage('Install Liquibase') {
+            steps {
+                script {
+                    // Download and install Liquibase
+                    sh """
+                    wget https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.zip
+                    unzip liquibase-${LIQUIBASE_VERSION}.zip -d ${LIQUIBASE_HOME}
+                    ln -s ${LIQUIBASE_HOME}/liquibase /usr/local/bin/liquibase
+                    """
+                }
+            }
+        }
+
+        stage('Apply Database Changes') {
+            steps {
+                script {
+                    // Run Liquibase update command
+                    sh """
+                    liquibase --changeLogFile=${CHANGELOG_FILE} \
+                              --url=${DB_URL} \
+                              --username=${DB_USERNAME} \
+                              --password=${DB_PASSWORD} \
+                              update
+                    """
+                }
+            }
+        }
     }
-  }
-  post {
-    always {
-      cleanWs()
+
+    post {
+        cleanup {
+            // Optionally clean up the Liquibase installation
+            sh 'rm -rf ${LIQUIBASE_HOME}'
+        }
     }
-  }
 }
