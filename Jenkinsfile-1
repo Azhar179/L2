@@ -11,7 +11,7 @@ pipeline {
     }
     stage('Update') {
       steps {
-        sh 'liquibase update --url="jdbc:mysql://localhost:3306/liquibase15.8m" --changeLogFile=changelog-master.xml --username=root --password=$root'
+        sh 'liquibase update --url="jdbc:mysql://localhost:3306/liquibase15.8" --changeLogFile=changelog-master.xml --username=root --password=$root'
       }
     }
   }
