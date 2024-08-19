@@ -9,6 +9,8 @@ pipeline {
         CHANGELOG_FILE = 'C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog/changelog-master.xml'
         LOCAL_CHANGLOG_VOLUME = 'C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog'
         CONTAINER_CHANGLOG_VOLUME = '/liquibase/changelog'
+        LOCAL_DRIVER_PATH = 'C:/Users/azbag/Downloads/MySqlJdbcDriver'  // Update this path
+        CONTAINER_DRIVER_PATH = '/liquibase/mysql-connector-java-8.0.x.jar'
     }
 
     stages {
@@ -25,11 +27,13 @@ pipeline {
                     bat """
                     docker run --rm --name liquibase ^
                         -v ${LOCAL_CHANGLOG_VOLUME}:${CONTAINER_CHANGLOG_VOLUME} ^
+                        -v ${LOCAL_DRIVER_PATH}:${CONTAINER_DRIVER_PATH} ^
                         liquibase/liquibase:4.28.0 ^
                         --changeLogFile=${CONTAINER_CHANGLOG_VOLUME}/changelog-master.xml ^
                         --url=${DB_URL} ^
                         --username=${DB_USERNAME} ^
                         --password=${DB_PASSWORD} ^
+                        --classpath=${CONTAINER_DRIVER_PATH} ^
                         update
                     """
                 }
