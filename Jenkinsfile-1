@@ -9,7 +9,7 @@ pipeline {
         CHANGELOG_FILE = 'C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog/changelog-master.xml'
         LOCAL_CHANGLOG_VOLUME = 'C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog'
         CONTAINER_CHANGLOG_VOLUME = '/liquibase/changelog'
-        LOCAL_DRIVER_PATH = 'C:/Users/azbag/AppData/Roaming/JetBrains/IntelliJIdea2024.1/jdbc-drivers/MySQL ConnectorJ/8.2.0/com/mysql/mysql-connector-j/8.2.0/mysql-connector-java-        8.2.0.jar'  // Path to the .jar file
+        LOCAL_DRIVER_PATH = 'C:/Users/azbag/AppData/Roaming/JetBrains/IntelliJIdea2024.1/jdbc-drivers/MySQL ConnectorJ/8.2.0/com/mysql/mysql-connector-j/8.2.0/mysql-connector-java-8.2.0.jar'  // Path to the .jar file
         CONTAINER_DRIVER_PATH = '/liquibase/mysql-connector-java-8.2.0.jar'
     }
 
