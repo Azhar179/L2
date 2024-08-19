@@ -3,31 +3,40 @@ pipeline {
 
     environment {
         LIQUIBASE_VERSION = '4.28.0'
-        LIQUIBASE_HOME = "/opt/liquibase"
         DB_URL = 'jdbc:mysql://localhost:3306/liquibase15.8'
         DB_USERNAME = 'root'
         DB_PASSWORD = 'root'
         CHANGELOG_FILE = 'C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog/changelog-master.xml'
+        LOCAL_CHANGLOG_VOLUME = 'C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog'
+        CONTAINER_CHANGLOG_VOLUME = '/liquibase/changelog'
     }
+
     stages {
         stage('Install Liquibase') {
             steps {
                 bat 'docker pull liquibase/liquibase:4.28.0'
             }
         }
+
         stage('Apply Database Changes') {
             steps {
-                bat 'liquibase --changeLogFile=${CHANGELOG_FILE} \
-                              --url=${DB_URL} \
-                              --username=${DB_USERNAME} \
-                              --password=${DB_PASSWORD} \
-                              update
-                     docker run --rm --name liquibase -v C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog:/liquibase/changelog \
-                     liquibase/liquibase:4.28.0 \
-                     --changeLogFile=/liquibase/changelog/changelog-master.xml update'
+                script {
+                    // Run Liquibase update command inside Docker container
+                    bat """
+                    docker run --rm --name liquibase ^
+                        -v ${LOCAL_CHANGLOG_VOLUME}:${CONTAINER_CHANGLOG_VOLUME} ^
+                        liquibase/liquibase:4.28.0 ^
+                        --changeLogFile=${CONTAINER_CHANGLOG_VOLUME}/changelog-master.xml ^
+                        --url=${DB_URL} ^
+                        --username=${DB_USERNAME} ^
+                        --password=${DB_PASSWORD} ^
+                        update
+                    """
+                }
             }
         }
     }
+
     post {
         always {
             bat 'docker container prune -f'
