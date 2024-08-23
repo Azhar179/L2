@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm {
+                    class: 'hudson.plugins.git.GitSCMSource'
+                    url: 'https://your-git-repository.git'
+                    
+                }
+            }
+        }
+
+        stage('Prepare Liquibase Environment') {
+            steps {
+                sh 'mkdir -p liquibase-changesets'
+            }
+        }
+
+        stage('Execute Liquibase Changes') {
+            steps {
+                sh '''
+                liquibase --classpath "lib/*" --url "jdbc:postgresql://your-database-url" --username "your-database-user" --password "your-database-password" --defaultSchemaName "your-schema-name" --changeLogFile "liquibase-changesets/changelog.xml" update
+                '''
+            }
+        }
+    }
+}
