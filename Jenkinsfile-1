@@ -10,7 +10,7 @@ pipeline {
         LOCAL_CHANGLOG_VOLUME = 'C:/Users/azbag/Downloads/liquibase15.8/demo/src/main/resources/db/changelog'
         CONTAINER_CHANGLOG_VOLUME = '/liquibase/changelog'
         LOCAL_DRIVER_PATH = 'C:/Users/azbag/Downloads/MySqlJdbcDriver'
-        CONTAINER_DRIVER_PATH = '/liquibase/mysql-connector-java-8.2.0.jar'
+        CONTAINER_DRIVER_PATH = '/liquibase/lib'
     }
 
     stages {
