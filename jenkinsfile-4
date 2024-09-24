@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    environment {
+        LIQUIBASE_HOME = '"C:/Program Files/liquibase/liquibase.bat"'  // Path to liquibase.bat wrapped in quotes
+        CHANGELOG_FILE = 'C:/Users/azbag/Downloads/24.09/demo/src/main/resources/db/changelog/changelog-master.xml'
+        DATABASE_URL = 'jdbc:mysql://your-db-host:3306/twenty_five'
+        DATABASE_USERNAME = 'root'
+        DATABASE_PASSWORD = 'root'
+    }
+
+    stages {
+        stage('Liquibase Update') {
+            steps {
+                script {
+                    // Echo the command to check it's correct
+                    echo "Running Liquibase Update:"
+                    echo "Liquibase Home: ${env.LIQUIBASE_HOME}"
+                    echo "Changelog File: ${env.CHANGELOG_FILE}"
+                    echo "Database URL: ${env.DATABASE_URL}"
+
+                    // Execute the Liquibase update with debug logs
+                    bat """
+                    ${env.LIQUIBASE_HOME} ^
+                    --changeLogFile=${env.CHANGELOG_FILE} ^
+                    --url=${env.DATABASE_URL} ^
+                    --username=${env.DATABASE_USERNAME} ^
+                    --password=${env.DATABASE_PASSWORD} ^
+                    --logLevel=debug ^
+                    update
+                    """
+                }
+            }
+        }
+    }
+}
