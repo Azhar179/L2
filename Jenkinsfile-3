@@ -1,28 +1,26 @@
 pipeline {
     agent any
-    
+
     environment {
-        LIQUIBASE_IMAGE = 'liquibase/liquibase:latest'
+        LIQUIBASE_HOME = 'C:/Program Files/liquibase'  // Update this path to your Liquibase installation
         CHANGELOG_FILE = 'C:/Users/azbag/Downloads/24.09/demo/src/main/resources/db/changelog/changelog-master.xml'
         DATABASE_URL = 'jdbc:mysql://your-db-host:3306/twenty_five'
         DATABASE_USERNAME = 'root'
         DATABASE_PASSWORD = 'root'
     }
-    
+
     stages {
         stage('Liquibase Update') {
             steps {
                 script {
-                    docker.image(env.LIQUIBASE_IMAGE).inside {
-                        sh """
-                        liquibase \
-                        --changeLogFile=${env.CHANGELOG_FILE} \
-                        --url=${env.DATABASE_URL} \
-                        --username=${env.DATABASE_USERNAME} \
-                        --password=${env.DATABASE_PASSWORD} \
-                        update
-                        """
-                    }
+                    bat """
+                    ${env.LIQUIBASE_HOME}/liquibase.bat \
+                    --changeLogFile=${env.CHANGELOG_FILE} \
+                    --url=${env.DATABASE_URL} \
+                    --username=${env.DATABASE_USERNAME} \
+                    --password=${env.DATABASE_PASSWORD} \
+                    update
+                    """
                 }
             }
         }
