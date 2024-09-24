@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    
+    environment {
+        LIQUIBASE_IMAGE = 'liquibase/liquibase:latest'
+        CHANGELOG_FILE = 'C:/Users/azbag/Downloads/24.09/demo/src/main/resources/db/changelog/changelog-master.xml'
+        DATABASE_URL = 'jdbc:mysql://your-db-host:3306/twenty_five'
+        DATABASE_USERNAME = 'root'
+        DATABASE_PASSWORD = 'root'
+    }
+    
+    stages {
+        stage('Liquibase Update') {
+            steps {
+                script {
+                    docker.image(env.LIQUIBASE_IMAGE).inside {
+                        sh """
+                        liquibase \
+                        --changeLogFile=${env.CHANGELOG_FILE} \
+                        --url=${env.DATABASE_URL} \
+                        --username=${env.DATABASE_USERNAME} \
+                        --password=${env.DATABASE_PASSWORD} \
+                        update
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
