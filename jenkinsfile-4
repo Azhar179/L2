@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         LIQUIBASE_HOME = '"C:/Program Files/liquibase/liquibase.bat"'  // Path to liquibase.bat wrapped in quotes
-        CHANGELOG_FILE = 'D:/Users/bhagwana/Downloads/L2/demo/src/main/resources/db/changelog/changelog-master.xml'
+        CHANGELOG_FILE = 'src/main/resources/db/changelog/changelog-master.xml'
         DATABASE_URL = 'jdbc:mysql://localhost:3306/twenty_five'
         DATABASE_USERNAME = 'root'
         DATABASE_PASSWORD = 'root'
