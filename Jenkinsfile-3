@@ -4,7 +4,7 @@ pipeline {
     environment {
         LIQUIBASE_HOME = 'C: /Program Files/liquibase/liquibase.bat'  // Update this path to your Liquibase installation
         CHANGELOG_FILE = 'C:/Users/azbag/Downloads/24.09/demo/src/main/resources/db/changelog/changelog-master.xml'
-        DATABASE_URL = 'jdbc:mysql://your-db-host:3306/twenty_five'
+        DATABASE_URL = 'jdbc:mysql://your-db-host:3306/twenty_six'
         DATABASE_USERNAME = 'root'
         DATABASE_PASSWORD = 'root'
     }
